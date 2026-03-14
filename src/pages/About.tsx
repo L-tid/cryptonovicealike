@@ -3,13 +3,7 @@ import { Shield, Heart, BookOpen } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.1, duration: 0.4 },
-  }),
-};
+import { fadeUp } from "@/lib/animations";
 
 const About = () => (
   <div className="min-h-screen bg-background">

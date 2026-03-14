@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { articles } from "@/data/articles";
 import { podcasts } from "@/data/podcasts";
 import { useState } from "react";
+import { fadeUp } from "@/lib/animations";
 import heroBg from "@/assets/hero-bg.jpg";
 import articleBtcEth from "@/assets/article-btc-eth.jpg";
 import articleWallet from "@/assets/article-wallet.jpg";
@@ -15,15 +16,6 @@ const articleImages: Record<string, string> = {
   "bitcoin-vs-ethereum": articleBtcEth,
   "first-crypto-wallet": articleWallet,
   "defi-explained": articleDefi,
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.15, duration: 0.5, ease: "easeOut" },
-  }),
 };
 
 const Index = () => {
