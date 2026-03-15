@@ -7,6 +7,8 @@ import { articles } from "@/data/articles";
 import { podcasts } from "@/data/podcasts";
 import { useState } from "react";
 import { fadeUp } from "@/lib/animations";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import heroBg from "@/assets/hero-bg.jpg";
 import articleBtcEth from "@/assets/article-btc-eth.jpg";
 import articleWallet from "@/assets/article-wallet.jpg";
@@ -23,12 +25,18 @@ const Index = () => {
   const [subscribed, setSubscribed] = useState(false);
   const featuredPodcasts = podcasts.filter((p) => p.featured);
 
-  const handleCTA = (e: React.FormEvent) => {
+  const handleCTA = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
+    if (!email) return;
+    const { error } = await supabase.from("subscribers").insert({ email });
+    if (error) {
+      if (error.code === "23505") toast.info("You're already subscribed!");
+      else toast.error("Something went wrong");
+    } else {
+      toast.success("Welcome aboard!");
     }
+    setSubscribed(true);
+    setEmail("");
   };
 
   return (
@@ -38,44 +46,25 @@ const Index = () => {
       {/* Hero */}
       <section className="relative flex min-h-screen items-center overflow-hidden pt-16">
         <div className="animated-grid absolute inset-0 opacity-20" />
-        <img
-          src={heroBg}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-20"
-        />
+        <img src={heroBg} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
-
         <div className="section-container relative z-10 py-24">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            className="mx-auto max-w-3xl text-center"
-          >
+          <motion.div initial="hidden" animate="visible" className="mx-auto max-w-3xl text-center">
             <motion.div variants={fadeUp} custom={0} className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm">
               <Sparkles size={14} className="text-primary" />
               Trusted by 5,000+ crypto-curious learners
             </motion.div>
-
             <motion.h1 variants={fadeUp} custom={1} className="font-display text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl lg:text-7xl">
-              From Zero to{" "}
-              <span className="gradient-text">Crypto Knowledgeable.</span>
+              From Zero to <span className="gradient-text">Crypto Knowledgeable.</span>
             </motion.h1>
-
             <motion.p variants={fadeUp} custom={2} className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
               Stop guessing. Start understanding. We curate the best podcasts and insights so you learn crypto with confidence—no financial advice, just education.
             </motion.p>
-
             <motion.div variants={fadeUp} custom={3} className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Link
-                to="/articles"
-                className="btn-glow flex items-center gap-2 rounded-xl bg-primary px-8 py-4 font-display text-base font-semibold text-primary-foreground"
-              >
+              <Link to="/articles" className="btn-glow flex items-center gap-2 rounded-xl bg-primary px-8 py-4 font-display text-base font-semibold text-primary-foreground">
                 Start Learning <ArrowRight size={18} />
               </Link>
-              <Link
-                to="/podcasts"
-                className="btn-glow flex items-center gap-2 rounded-xl border border-border bg-card/50 px-8 py-4 font-display text-base font-semibold text-foreground backdrop-blur-sm"
-              >
+              <Link to="/podcasts" className="btn-glow flex items-center gap-2 rounded-xl border border-border bg-card/50 px-8 py-4 font-display text-base font-semibold text-foreground backdrop-blur-sm">
                 <Headphones size={18} /> Browse Podcasts
               </Link>
             </motion.div>
@@ -86,49 +75,19 @@ const Index = () => {
       {/* Results Section */}
       <section className="relative py-24">
         <div className="section-container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="mb-16 text-center"
-          >
-            <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">
-              Why CryptoNovice
-            </motion.p>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mb-16 text-center">
+            <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">Why CryptoNovice</motion.p>
             <motion.h2 variants={fadeUp} custom={1} className="mt-3 font-display text-3xl font-bold sm:text-4xl">
               What if learning crypto felt like having a knowledgeable friend explain things over coffee?
             </motion.h2>
           </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid gap-6 md:grid-cols-3"
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid gap-6 md:grid-cols-3">
             {[
-              {
-                icon: BookOpen,
-                title: "Understand the Lingo",
-                desc: "DeFi, NFTs, L2s made simple. No jargon, just clear explanations that actually make sense.",
-              },
-              {
-                icon: Headphones,
-                title: "Learn on the Go",
-                desc: "Curated podcasts from the brightest minds in crypto. Listen during your commute, gym, or coffee break.",
-              },
-              {
-                icon: Zap,
-                title: "No Noise, Just Signal",
-                desc: "We filter the hype so you get clarity. No shilling, no FOMO—just trusted education.",
-              },
+              { icon: BookOpen, title: "Understand the Lingo", desc: "DeFi, NFTs, L2s made simple. No jargon, just clear explanations that actually make sense." },
+              { icon: Headphones, title: "Learn on the Go", desc: "Curated podcasts from the brightest minds in crypto. Listen during your commute, gym, or coffee break." },
+              { icon: Zap, title: "No Noise, Just Signal", desc: "We filter the hype so you get clarity. No shilling, no FOMO—just trusted education." },
             ].map((item, i) => (
-              <motion.div
-                key={item.title}
-                variants={fadeUp}
-                custom={i}
-                className="card-hover group rounded-2xl border border-border bg-card p-8"
-              >
+              <motion.div key={item.title} variants={fadeUp} custom={i} className="card-hover group rounded-2xl border border-border bg-card p-8">
                 <div className="mb-4 inline-flex rounded-xl bg-primary/10 p-3 text-primary transition-colors group-hover:bg-primary/20">
                   <item.icon size={24} />
                 </div>
@@ -143,47 +102,23 @@ const Index = () => {
       {/* Featured Podcasts */}
       <section className="bg-card/50 py-24">
         <div className="section-container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="mb-16 flex items-end justify-between"
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mb-16 flex items-end justify-between">
             <div>
-              <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">
-                Featured Podcasts
-              </motion.p>
-              <motion.h2 variants={fadeUp} custom={1} className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-                This Week's Top Picks
-              </motion.h2>
+              <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">Featured Podcasts</motion.p>
+              <motion.h2 variants={fadeUp} custom={1} className="mt-3 font-display text-3xl font-bold sm:text-4xl">This Week's Top Picks</motion.h2>
             </div>
             <motion.div variants={fadeUp} custom={2}>
-              <Link to="/podcasts" className="hidden items-center gap-1 text-sm font-medium text-primary hover:underline sm:flex">
-                View All <ArrowRight size={14} />
-              </Link>
+              <Link to="/podcasts" className="hidden items-center gap-1 text-sm font-medium text-primary hover:underline sm:flex">View All <ArrowRight size={14} /></Link>
             </motion.div>
           </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid gap-6 md:grid-cols-3"
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid gap-6 md:grid-cols-3">
             {featuredPodcasts.map((pod, i) => (
-              <motion.div
-                key={pod.id}
-                variants={fadeUp}
-                custom={i}
-                className="card-hover group rounded-2xl border border-border bg-card overflow-hidden"
-              >
+              <motion.div key={pod.id} variants={fadeUp} custom={i} className="card-hover group rounded-2xl border border-border bg-card overflow-hidden">
                 <div className="flex h-48 items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
                   <Headphones size={48} className="text-primary opacity-60" />
                 </div>
                 <div className="p-6">
-                  <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                    {pod.episodeTag}
-                  </span>
+                  <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{pod.episodeTag}</span>
                   <h3 className="mt-3 font-display text-lg font-bold">{pod.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{pod.source}</p>
                   <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{pod.description}</p>
@@ -197,47 +132,23 @@ const Index = () => {
       {/* Featured Articles */}
       <section className="py-24">
         <div className="section-container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="mb-16"
-          >
-            <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">
-              Featured Articles
-            </motion.p>
-            <motion.h2 variants={fadeUp} custom={1} className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-              Start With the Essentials
-            </motion.h2>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mb-16">
+            <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">Featured Articles</motion.p>
+            <motion.h2 variants={fadeUp} custom={1} className="mt-3 font-display text-3xl font-bold sm:text-4xl">Start With the Essentials</motion.h2>
           </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid gap-8 md:grid-cols-3"
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid gap-8 md:grid-cols-3">
             {articles.map((article, i) => (
               <motion.div key={article.id} variants={fadeUp} custom={i}>
-                <Link
-                  to={`/articles/${article.slug}`}
-                  className="card-hover group block overflow-hidden rounded-2xl border border-border bg-card"
-                >
+                <Link to={`/articles/${article.slug}`} className="card-hover group block overflow-hidden rounded-2xl border border-border bg-card">
                   <div className="h-48 overflow-hidden">
-                    <img
-                      src={articleImages[article.slug]}
-                      alt={article.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    <img src={articleImages[article.slug]} alt={article.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1"><Clock size={12} /> {article.readTime} min read</span>
                       <span>{article.author}</span>
                     </div>
-                    <h3 className="mt-3 font-display text-lg font-bold group-hover:text-primary transition-colors">
-                      {article.title}
-                    </h3>
+                    <h3 className="mt-3 font-display text-lg font-bold group-hover:text-primary transition-colors">{article.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{article.excerpt}</p>
                   </div>
                 </Link>
@@ -250,26 +161,11 @@ const Index = () => {
       {/* How It Works */}
       <section className="bg-card/50 py-24">
         <div className="section-container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="mb-16 text-center"
-          >
-            <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">
-              How It Works
-            </motion.p>
-            <motion.h2 variants={fadeUp} custom={1} className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-              Three Steps to Crypto Confidence
-            </motion.h2>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mb-16 text-center">
+            <motion.p variants={fadeUp} custom={0} className="text-sm font-semibold uppercase tracking-widest text-primary">How It Works</motion.p>
+            <motion.h2 variants={fadeUp} custom={1} className="mt-3 font-display text-3xl font-bold sm:text-4xl">Three Steps to Crypto Confidence</motion.h2>
           </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid gap-8 md:grid-cols-3"
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid gap-8 md:grid-cols-3">
             {[
               { step: "01", title: "Tell Us Your Level", desc: "Complete beginner? Heard of Bitcoin but confused by everything else? We meet you where you are." },
               { step: "02", title: "Get Personalized Picks", desc: "We curate the best podcasts and articles tailored to your knowledge level. No overwhelm." },
@@ -288,12 +184,7 @@ const Index = () => {
       {/* Testimonials */}
       <section className="py-24">
         <div className="section-container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="mx-auto max-w-3xl"
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mx-auto max-w-3xl">
             <motion.div variants={fadeUp} custom={0} className="rounded-2xl border border-border bg-card p-10 text-center">
               <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                 <Users size={24} className="text-primary" />
@@ -310,19 +201,11 @@ const Index = () => {
       {/* CTA */}
       <section id="cta" className="bg-card/50 py-24">
         <div className="section-container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="mx-auto max-w-2xl text-center"
-          >
-            <motion.h2 variants={fadeUp} custom={0} className="font-display text-3xl font-bold sm:text-4xl">
-              Start Your Crypto Journey
-            </motion.h2>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mx-auto max-w-2xl text-center">
+            <motion.h2 variants={fadeUp} custom={0} className="font-display text-3xl font-bold sm:text-4xl">Start Your Crypto Journey</motion.h2>
             <motion.p variants={fadeUp} custom={1} className="mt-4 text-muted-foreground">
               Join 5,000+ learners getting curated crypto education delivered to their inbox. No spam, no hype—just signal.
             </motion.p>
-
             <motion.div variants={fadeUp} custom={2} className="mt-8">
               {subscribed ? (
                 <div className="flex items-center justify-center gap-2 text-primary">
@@ -339,10 +222,7 @@ const Index = () => {
                     required
                     className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   />
-                  <button
-                    type="submit"
-                    className="btn-glow flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-display font-semibold text-primary-foreground"
-                  >
+                  <button type="submit" className="btn-glow flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-display font-semibold text-primary-foreground">
                     Join <ArrowRight size={16} />
                   </button>
                 </form>
