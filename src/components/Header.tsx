@@ -79,9 +79,9 @@ const Header = () => {
               </Button>
             </div>
           ) : (
-            <Button size="sm" onClick={() => { signInWithGoogle(); setMobileOpen(false); }}>
-              Sign In with Google
-            </Button>
+            <Link to="/auth" onClick={() => setMobileOpen(false)}>
+              <Button size="sm">Sign In</Button>
+            </Link>
           )}
         </nav>
       )}
