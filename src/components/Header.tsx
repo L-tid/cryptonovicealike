@@ -13,22 +13,22 @@ const Header = () => {
       <div className="section-container flex h-16 items-center justify-between">
         <Link to="/" className="font-display text-xl font-bold">
           <span className="gradient-text">Crypto</span>
-          <span className="text-foreground">Novice</span>
+          <span className="text-foreground">NoviceAlike</span>
         </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-6 md:flex">
-          <Link to="/articles" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <Link to="/articles" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Articles
           </Link>
-          <Link to="/podcasts" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <Link to="/podcasts" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Podcasts
           </Link>
-          <Link to="/about" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <Link to="/about" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             About
           </Link>
           {isAdmin && (
-            <Link to="/admin" className="flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80">
+            <Link to="/admin" className="flex items-center gap-1 text-sm text-primary transition-colors hover:text-primary/80">
               <Shield size={14} /> Admin
             </Link>
           )}
@@ -61,11 +61,11 @@ const Header = () => {
       {/* Mobile Nav */}
       {mobileOpen && (
         <nav className="flex flex-col gap-4 border-t border-border bg-background p-6 md:hidden">
-          <Link to="/articles" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-muted-foreground">Articles</Link>
-          <Link to="/podcasts" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-muted-foreground">Podcasts</Link>
-          <Link to="/about" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-muted-foreground">About</Link>
+          <Link to="/articles" onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground">Articles</Link>
+          <Link to="/podcasts" onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground">Podcasts</Link>
+          <Link to="/about" onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground">About</Link>
           {isAdmin && (
-            <Link to="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-1 text-sm font-medium text-primary">
+            <Link to="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-1 text-sm text-primary">
               <Shield size={14} /> Admin
             </Link>
           )}
