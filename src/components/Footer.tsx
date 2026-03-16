@@ -28,7 +28,7 @@ const Footer = () => {
           <div className="md:col-span-1">
             <Link to="/" className="font-display text-xl font-bold">
               <span className="gradient-text">Crypto</span>
-              <span className="text-foreground">Novice</span>
+              <span className="text-foreground">NoviceAlike</span>
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
               We find the signal in the noise so you can learn crypto with confidence.
@@ -71,7 +71,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-12 border-t border-border pt-6 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} CryptoNovice. Education, not financial advice.
+          © {new Date().getFullYear()} CryptoNoviceAlike. Education, not financial advice.
         </div>
       </div>
     </footer>
