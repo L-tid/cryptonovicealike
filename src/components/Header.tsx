@@ -43,9 +43,9 @@ const Header = () => {
               </Button>
             </div>
           ) : (
-            <Button size="sm" onClick={signInWithGoogle} className="btn-glow">
-              Sign In
-            </Button>
+            <Link to="/auth">
+              <Button size="sm" className="btn-glow">Sign In</Button>
+            </Link>
           )}
         </nav>
 
