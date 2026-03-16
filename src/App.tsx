@@ -9,6 +9,7 @@ import ArticlePage from "./pages/ArticlePage";
 import Podcasts from "./pages/Podcasts";
 import About from "./pages/About";
 import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/podcasts" element={<Podcasts />} />
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
